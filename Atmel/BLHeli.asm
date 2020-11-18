@@ -5687,19 +5687,19 @@ clear_ram:
 	sts	Initial_Arm, XH
 	; Initializing beep
 	cli					; Disable interrupts explicitly
-	xcall wait200ms	
-	xcall beep_f1
-	xcall wait30ms
-	xcall beep_f2
-	xcall wait30ms
-	xcall beep_f3
-	xcall wait30ms
+;	xcall wait200ms	; *** disbale wait
+;	xcall beep_f1	; *** disbale beep
+;	xcall wait30ms	; *** disbale wait
+;	xcall beep_f2	; *** disbale beep
+;	xcall wait30ms	; *** disbale wait
+;	xcall beep_f3	; *** disbale beep
+;	xcall wait30ms	; *** disbale wait
 .IF MODE <= 1	; Main or tail
 	; Wait for receiver to initialize
-	xcall wait1s
-	xcall wait200ms
-	xcall wait200ms
-	xcall wait100ms
+;	xcall wait1s	; *** disbale wait
+;	xcall wait200ms	; *** disbale wait
+;	xcall wait200ms	; *** disbale wait
+;	xcall wait100ms	; *** disbale wait
 .ENDIF
 
 ;**** **** **** **** **** **** **** **** **** **** **** **** ****
@@ -5890,11 +5890,11 @@ validate_rcp_start:
 
 	; Beep arm sequence start signal
 	cli								; Disable all interrupts
-	xcall beep_f1						; Signal that RC pulse is ready
-	xcall beep_f1
-	xcall beep_f1
+;	xcall beep_f1						; Signal that RC pulse is ready *** disbale beep
+;	xcall beep_f1	; *** disbale beep
+;	xcall beep_f1	; *** disbale beep
 	sei								; Enable all interrupts
-	xcall wait200ms	
+;	xcall wait200ms		; *** disbale wait
 
 	; Arming sequence start
 	sts	Gov_Arm_Target, Zero	; Clear governor arm target
@@ -6085,11 +6085,11 @@ arm_target_updated:
 arm_end_beep:
 	; Beep arm sequence end signal
 	cli						; Disable all interrupts
-	xcall beep_f4				; Signal that rcpulse is ready
-	xcall beep_f4
-	xcall beep_f4
+;	xcall beep_f4				; Signal that rcpulse is ready	*** disbale beep
+;	xcall beep_f4	; *** disbale beep
+;	xcall beep_f4	; *** disbale beep
 	sei						; Enable all interrupts
-	xcall wait200ms
+;	xcall wait200ms	; *** disbale wait
 
 	; Clear initial arm variable
 	sts	Initial_Arm, Zero
