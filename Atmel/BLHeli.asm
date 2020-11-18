@@ -1876,7 +1876,9 @@ t0_int_pulses_absent_no_max:
 	sts	Rcp_Timeout_Cntd, XL
 
 t0_int_ppm_timeout_set:
-	sts	New_Rcp, I_Temp1			; Store new pulse length
+	lds	XL, Pgm_Gov_Setup_Target		; *** Load default speed from Governor
+	sts	New_Rcp, XL				; *** Store the new pulse length
+;	sts	New_Rcp, I_Temp1			; Store new pulse length *** Removed
 	sbr	Flags2, (1<<RCP_UPDATED)	 	; Set updated flag
 	; Check if zero
 	tst	I_Temp1					; Test new pulse value
@@ -1913,7 +1915,7 @@ t0_int_rcp_update_start:
 	lds	XL, New_Rcp				; Load new pulse value
 	mov	I_Temp1, XL
 	sbrs	Flags0, RCP_MEAS_PWM_FREQ	; If measure RCP pwm frequency flag set - do not clear flag
-	cbr	Flags2, (1<<RCP_UPDATED)	 	; Flag that pulse has been evaluated
+;	cbr	Flags2, (1<<RCP_UPDATED)	 	; Flag that pulse has been evaluated *** do not clear this flag
 	; Use a gain of 1.0625x for pwm input if not governor mode
 	sbrc	Flags2, RCP_PPM		
 	rjmp	t0_int_pwm_min_run			; If flag is set (PPM) - branch
@@ -2125,7 +2127,7 @@ t0h_int:
 	sbrs	Flags2, RCP_PPM		
 	rjmp	t0h_int_rcp_stop_check		; If flag is not set (PWM) - branch
 
-	dec	I_Temp2					; No flag set (PPM) - decrement
+;	dec	I_Temp2					; No flag set (PPM) - decrement *** Eliminate this decrement so the motor does not halt for lack of a fresh pulse
 	sts	Rcp_Timeout_Cntd, I_Temp2
 
 t0h_int_rcp_stop_check:
@@ -2892,7 +2894,7 @@ beep_anfet_off:
 	brne	beep_cnfet_off
 	CnFET_off			; CnFET off
 beep_cnfet_off:
-	ldi	XH, 135		; 25µs off
+	ldi	XH, 135		; 25Âµs off
 	dec	XH			
 	brne	PC-1	
 	dec	Temp2
@@ -5808,6 +5810,8 @@ measure_pwm_freq_init:
 measure_pwm_freq_start:	
 	ldi	Temp3, 12						; Number of pulses to measure
 measure_pwm_freq_loop:	
+	ldi	XH, 1						; *** Manually set that the period has been accepted
+	sts	Rcp_Period_Diff_Accepted, XH			; *** Store the above setting
 	; Check if period diff was accepted
 	lds	XH, Rcp_Period_Diff_Accepted
 	tst	XH
@@ -5819,11 +5823,14 @@ measure_pwm_freq_loop:
 	rjmp	init_no_signal
 
 measure_pwm_freq_wait:
+	lds	XH, Pgm_Gov_Setup_Target			; *** Load default speed from Governor
+	sts	New_Rcp, XH					; *** Store the new pulse length
+	sbr	Flags2, (1<<RCP_UPDATED)	 		; *** Manually set the updated flag
 	xcall wait30ms						; Wait 30ms for new pulse
 	sbrs	Flags2, RCP_UPDATED				; Is there an updated RC pulse available - proceed
 	rjmp	init_no_signal					; Go back to detect input signal
 
-	cbr	Flags2, (1<<RCP_UPDATED)	 		; Flag that pulse has been evaluated
+;	cbr	Flags2, (1<<RCP_UPDATED)	 		; Flag that pulse has been evaluated *** do not clear this flag
 	lds	XH, New_Rcp					; Load value
 	cpi	XH, RCP_VALIDATE				; Higher than validate level?
 	brcs	measure_pwm_freq_start			; No - start over
@@ -6073,7 +6080,7 @@ arm_target_updated:
 	cp	XH, Temp1				; Below stop?
 	brcs	arm_end_beep			; Yes - proceed
 
-	rjmp	arming_start			; No - start over
+;	rjmp	arming_start			; No - start over *** Remove this jump
 
 arm_end_beep:
 	; Beep arm sequence end signal
