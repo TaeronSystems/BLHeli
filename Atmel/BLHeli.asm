@@ -1079,25 +1079,25 @@
 ; - Governor setup target is only used if Setup governor mode is selected (or closed loop mode is on for multi)
 ;
 ; Main
-.EQU	DEFAULT_PGM_MAIN_P_GAIN 			= 7 	; 1=0.13		2=0.17		3=0.25		4=0.38 		5=0.50 	6=0.75 	7=1.00 8=1.5 9=2.0 10=3.0 11=4.0 12=6.0 13=8.0
-.EQU	DEFAULT_PGM_MAIN_I_GAIN 			= 7 	; 1=0.13		2=0.17		3=0.25		4=0.38 		5=0.50 	6=0.75 	7=1.00 8=1.5 9=2.0 10=3.0 11=4.0 12=6.0 13=8.0
-.EQU	DEFAULT_PGM_MAIN_GOVERNOR_MODE 	= 1 	; 1=Tx 		2=Arm 		3=Setup		4=Off
+.EQU	DEFAULT_PGM_MAIN_P_GAIN 			= 13 	; 1=0.13		2=0.17		3=0.25		4=0.38 		5=0.50 	6=0.75 	7=1.00 8=1.5 9=2.0 10=3.0 11=4.0 12=6.0 13=8.0
+.EQU	DEFAULT_PGM_MAIN_I_GAIN 			= 13 	; 1=0.13		2=0.17		3=0.25		4=0.38 		5=0.50 	6=0.75 	7=1.00 8=1.5 9=2.0 10=3.0 11=4.0 12=6.0 13=8.0
+.EQU	DEFAULT_PGM_MAIN_GOVERNOR_MODE 	= 4 	; 1=Tx 		2=Arm 		3=Setup		4=Off
 .EQU	DEFAULT_PGM_MAIN_GOVERNOR_RANGE 	= 1 	; 1=High		2=Middle		3=Low
-.EQU	DEFAULT_PGM_MAIN_LOW_VOLTAGE_LIM	= 4 	; 1=Off		2=3.0V/c		3=3.1V/c		4=3.2V/c		5=3.3V/c	6=3.4V/c
+.EQU	DEFAULT_PGM_MAIN_LOW_VOLTAGE_LIM	= 1 	; 1=Off		2=3.0V/c		3=3.1V/c		4=3.2V/c		5=3.3V/c	6=3.4V/c
 .EQU	DEFAULT_PGM_MAIN_COMM_TIMING		= 3 	; 1=Low 		2=MediumLow 	3=Medium 		4=MediumHigh 	5=High
 .IF DAMPED_MODE_ENABLE == 1
-.EQU	DEFAULT_PGM_MAIN_PWM_FREQ 		= 2 	; 1=High 		2=Low		3=DampedLight
+.EQU	DEFAULT_PGM_MAIN_PWM_FREQ 		= 1 	; 1=High 		2=Low		3=DampedLight
 .ELSE
-.EQU	DEFAULT_PGM_MAIN_PWM_FREQ 		= 2 	; 1=High 		2=Low		
+.EQU	DEFAULT_PGM_MAIN_PWM_FREQ 		= 1 	; 1=High 		2=Low		
 .ENDIF
 .EQU	DEFAULT_PGM_MAIN_DEMAG_COMP 		= 1 	; 1=Disabled	2=Low		3=High
 .EQU	DEFAULT_PGM_MAIN_DIRECTION		= 1 	; 1=Normal 	2=Reversed
 .EQU	DEFAULT_PGM_MAIN_RCP_PWM_POL 		= 1 	; 1=Positive 	2=Negative
-.EQU	DEFAULT_PGM_MAIN_GOV_SETUP_TARGET	= 180; Target for governor in setup mode. Corresponds to 70% throttle
+.EQU	DEFAULT_PGM_MAIN_GOV_SETUP_TARGET	= 150; Target for governor in setup mode. Corresponds to 70% throttle
 .EQU	DEFAULT_PGM_MAIN_REARM_START		= 0 	; 1=Enabled 	0=Disabled
 .EQU	DEFAULT_PGM_MAIN_BEEP_STRENGTH	= 120; Beep strength
 .EQU	DEFAULT_PGM_MAIN_BEACON_STRENGTH	= 200; Beacon strength
-.EQU	DEFAULT_PGM_MAIN_BEACON_DELAY		= 4 	; 1=1m		2=2m			3=5m			4=10m		5=Infinite
+.EQU	DEFAULT_PGM_MAIN_BEACON_DELAY		= 5 	; 1=1m		2=2m			3=5m			4=10m		5=Infinite
 
 ; Tail
 .EQU	DEFAULT_PGM_TAIL_GAIN 			= 3 	; 1=0.75 		2=0.88 		3=1.00 		4=1.12 		5=1.25
@@ -1136,7 +1136,7 @@
 .EQU	DEFAULT_PGM_MULTI_PWM_DITHER		= 3 	; 1=Off		2=3			3=7			4=15			5=31
 
 ; Common
-.EQU	DEFAULT_PGM_ENABLE_TX_PROGRAM 	= 1 	; 1=Enabled 	0=Disabled
+.EQU	DEFAULT_PGM_ENABLE_TX_PROGRAM 	= 0 	; 1=Enabled 	0=Disabled
 .EQU	DEFAULT_PGM_PPM_MIN_THROTTLE		= 37	; 4*37+1000=1148
 .EQU	DEFAULT_PGM_PPM_MAX_THROTTLE		= 208; 4*208+1000=1832
 .EQU	DEFAULT_PGM_PPM_CENTER_THROTTLE	= 122; 4*122+1000=1488 (used in bidirectional mode)
@@ -1569,7 +1569,11 @@ Eep_Pgm_Brake_On_Stop:		.DB	DEFAULT_PGM_BRAKE_ON_STOP		; EEPROM copy of programm
 Eep_Dummy:				.DB	0xFF							; EEPROM address for safety reason
 
 .ORG 0x60				
+#if defined(GMVer)
+Eep_Name:					.DB	"Tearon_GM_", GMVer, " "
+#else
 Eep_Name:					.DB	"                "				; Name tag (16 Bytes)
+#endif
 
 ;**** **** **** **** ****
 .CSEG				; Code segment
