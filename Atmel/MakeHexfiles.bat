@@ -17,8 +17,7 @@ MKDIR Output >nul 2>&1
 MKDIR Output\Hex >nul 2>&1
 MKDIR Output\Eep >nul 2>&1
 SET Revision=REV14_9
-SET AtmelPath="C:\Taeron\BLHeli\bin"
-rem SET AtmelPath="C:\Dev\Atmel\AVR Tools\AvrAssembler2"
+SET AtmelPath="..\bin"
 SET GMDir=BLHeli_GM
 SET GMVer=v1.00
 MKDIR Output\%GMDir% >nul 2>&1
